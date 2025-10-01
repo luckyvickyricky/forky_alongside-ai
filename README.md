@@ -95,11 +95,19 @@ LANGFUSE_HOST=https://cloud.langfuse.com
 
 ### 개발 서버 실행
 ```bash
+# 방법 1: 스크립트 사용
+./scripts/dev.sh
+
+# 방법 2: 직접 실행
 uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### 프로덕션 서버 실행 (AWS EC2)
+### 프로덕션 서버 실행
 ```bash
+# 방법 1: 스크립트 사용
+./scripts/start.sh
+
+# 방법 2: 직접 실행
 uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
 ```
 
@@ -131,7 +139,11 @@ uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
 
 ### 테스트
 ```bash
-uv run pytest
+# 간단한 서버 테스트
+./scripts/test.sh
+
+# 워크플로우 예제 실행 (서버가 실행 중이어야 함)
+uv run python examples/simple_workflow.py
 ```
 
 ## 배포
@@ -140,11 +152,21 @@ AWS EC2 인스턴스에 배포하는 방법:
 
 1. EC2 인스턴스 생성 및 접속
 2. 프로젝트 클론
-3. UV 설치
-4. 환경 변수 설정
-5. 서비스 실행
+3. 설치 스크립트 실행: `./scripts/install.sh`
+4. 환경 변수 설정: `.env` 파일 작성
+5. systemd 서비스 등록 및 실행
 
-자세한 배포 가이드는 추후 추가 예정입니다.
+자세한 배포 가이드는 `deployment/deploy.md`를 참조하세요.
+
+### 빠른 설치
+```bash
+git clone https://github.com/your-repo/forky_alongside-ai.git
+cd forky_alongside-ai
+./scripts/install.sh
+cp env.example .env
+nano .env
+./scripts/start.sh
+```
 
 ## 라이센스
 

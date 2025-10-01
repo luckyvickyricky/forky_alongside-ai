@@ -1,6 +1,8 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.logging import langfuse_logger
+from app.core.exceptions import ServiceException, service_exception_handler
 from app.api.v1 import documents, keywords, questions, evaluate
 
 app = FastAPI(
@@ -8,6 +10,16 @@ app = FastAPI(
     version=settings.app_version,
     description="AI-powered interview practice system based on portfolio documents"
 )
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.add_exception_handler(ServiceException, service_exception_handler)
 
 app.include_router(documents.router, prefix="/api/v1")
 app.include_router(keywords.router, prefix="/api/v1")
