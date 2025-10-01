@@ -3,20 +3,26 @@ from app.services.llm_service import llm_service
 
 
 class OverallEvaluationService:
-    def evaluate_all_answers(
+    def evaluate_all_session(
         self, 
-        qa_pairs: List[dict], 
-        portfolio_context: Optional[str] = None
+        html_content: Optional[str] = None,
+        session_data: dict = None,
+        user_level: str = "intermediate"
     ) -> dict:
+        questions = session_data.get('questions', [])
+        answers = session_data.get('answers', [])
+        question_types = session_data.get('question_types', [])
+        
         qa_text = "\n\n".join([
-            f"질문 {i+1}: {qa['question']}\n답변: {qa['answer']}"
-            for i, qa in enumerate(qa_pairs)
+            f"질문 {i+1} [{question_types[i] if i < len(question_types) else 'general'}]: {q}\n답변: {a}"
+            for i, (q, a) in enumerate(zip(questions, answers))
         ])
         
-        context_text = f"\n포트폴리오 컨텍스트:\n{portfolio_context[:2000]}\n" if portfolio_context else ""
+        context_text = f"\n포트폴리오 컨텍스트:\n{html_content[:2000]}\n" if html_content else ""
+        level_text = f"사용자 레벨: {user_level}\n"
         
         prompt = f"""당신은 면접관입니다. 전체 면접을 종합적으로 평가해주세요.
-{context_text}
+{level_text}{context_text}
 면접 내용:
 {qa_text}
 
@@ -109,11 +115,21 @@ class OverallEvaluationService:
         
         return evaluation
     
-    def evaluate_portfolio(self, html_content: str) -> dict:
+    def evaluate_portfolio(
+        self, 
+        html_content: str,
+        portfolio_text: Optional[str] = None,
+        evaluation_criteria: Optional[List[str]] = None
+    ) -> dict:
+        content = portfolio_text or html_content
+        criteria_text = ""
+        if evaluation_criteria:
+            criteria_text = f"\n평가 기준: {', '.join(evaluation_criteria)}\n"
+        
         prompt = f"""당신은 포트폴리오 평가 전문가입니다. 다음 포트폴리오의 완성도를 평가해주세요.
-
+{criteria_text}
 포트폴리오 내용:
-{html_content[:4000]}
+{content[:4000]}
 
 다음 형식으로 평가해주세요:
 

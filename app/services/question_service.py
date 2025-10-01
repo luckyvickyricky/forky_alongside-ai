@@ -8,16 +8,25 @@ class QuestionService:
         self, 
         html_content: str, 
         keywords: Optional[list[str]] = None,
+        company: Optional[str] = None,
+        company_info: Optional[str] = None,
+        job_position: Optional[str] = None,
+        portfolio_text: Optional[str] = None,
         num_questions: int = 5
     ) -> list[dict]:
         keyword_text = ""
         if keywords:
             keyword_text = f"\n주요 키워드: {', '.join(keywords)}\n"
         
+        company_text = f"\n회사: {company or company_info}\n" if company or company_info else ""
+        job_text = f"지원 직무: {job_position}\n" if job_position else ""
+        
+        content = portfolio_text or html_content
+        
         prompt = f"""당신은 면접관입니다. 다음 포트폴리오 문서를 바탕으로 {num_questions}개의 면접 질문을 만들어주세요.
-{keyword_text}
+{keyword_text}{company_text}{job_text}
 포트폴리오 내용:
-{html_content[:4000]}
+{content[:4000]}
 
 질문은 다음 조건을 만족해야 합니다:
 1. 포트폴리오에 명시된 경험과 기술을 기반으로 한 질문
@@ -61,9 +70,12 @@ class QuestionService:
                     content = content[end_bracket+1:].strip()
             
             questions.append({
-                "question_id": str(uuid.uuid4()),
-                "question_text": content,
-                "category": category
+                "id": f"tech_{len(questions)+1}",
+                "type": "technical",
+                "text": content,
+                "explanation": category,
+                "question": content,
+                "answer": ""
             })
         
         return questions[:num_questions]

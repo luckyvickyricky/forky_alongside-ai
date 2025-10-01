@@ -7,9 +7,11 @@ from app.models.schemas import (
     Question,
     FollowingQuestionRequest,
     FollowingQuestionResponse,
+    FollowingQuestion,
     EvaluateAnswerRequest,
     EvaluateAnswerResponse,
-    AnswerFeedback
+    AnswerFeedback,
+    DetailedFeedback
 )
 
 router = APIRouter(prefix="/questions", tags=["questions"])
@@ -18,17 +20,23 @@ router = APIRouter(prefix="/questions", tags=["questions"])
 @router.post("/generate", response_model=QuestionGenerateResponse)
 async def generate_questions(request: QuestionGenerateRequest):
     try:
+        content = request.html_content or request.text or ""
+        
         questions_data = question_service.generate_main_questions(
-            request.html_content,
-            request.keywords,
-            request.num_questions
+            content,
+            request.keywords or [],
+            company=request.company,
+            company_info=request.company_info,
+            job_position=request.job_position,
+            portfolio_text=request.portfolio_text
         )
         
         questions = [Question(**q) for q in questions_data]
         
         return QuestionGenerateResponse(
             success=True,
-            questions=questions
+            questions=questions,
+            is_fallback=False
         )
     except Exception as e:
         return QuestionGenerateResponse(
@@ -40,15 +48,21 @@ async def generate_questions(request: QuestionGenerateRequest):
 @router.post("/following", response_model=FollowingQuestionResponse)
 async def generate_following_question(request: FollowingQuestionRequest):
     try:
-        following_question = evaluation_service.generate_following_question(
+        following_questions = evaluation_service.generate_following_questions(
             request.question,
             request.answer,
-            request.context
+            html_content=request.html_content,
+            portfolio_text=request.portfolio_text,
+            interviewer_persona=request.interviewer_persona,
+            max_questions=request.max_questions or 2,
+            context=request.context
         )
+        
+        questions = [FollowingQuestion(**q) for q in following_questions]
         
         return FollowingQuestionResponse(
             success=True,
-            following_question=following_question
+            questions=questions
         )
     except Exception as e:
         return FollowingQuestionResponse(
@@ -63,7 +77,8 @@ async def evaluate_answer(request: EvaluateAnswerRequest):
         feedback_data = evaluation_service.evaluate_answer(
             request.question,
             request.answer,
-            request.context
+            html_content=request.html_content,
+            user_level=request.user_level
         )
         
         feedback = AnswerFeedback(**feedback_data)

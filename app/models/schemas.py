@@ -27,47 +27,76 @@ class KeywordExtractResponse(BaseModel):
 
 
 class QuestionGenerateRequest(BaseModel):
-    html_content: str
     keywords: Optional[List[str]] = None
-    num_questions: int = 5
+    company: Optional[str] = None
+    text: Optional[str] = None
+    html_content: Optional[str] = None
+    portfolio_text: Optional[str] = None
+    company_info: Optional[str] = None
+    job_position: Optional[str] = None
 
 
 class Question(BaseModel):
-    question_id: str
-    question_text: str
-    category: Optional[str] = None
+    id: str
+    type: str
+    text: str
+    explanation: Optional[str] = None
+    question: Optional[str] = None
+    answer: Optional[str] = None
 
 
 class QuestionGenerateResponse(BaseModel):
     success: bool
     questions: Optional[List[Question]] = None
+    is_fallback: Optional[bool] = None
+    fallback_reason: Optional[str] = None
     error: Optional[str] = None
 
 
 class FollowingQuestionRequest(BaseModel):
+    html_content: Optional[str] = None
     question: str
     answer: str
+    interviewer_persona: Optional[str] = None
+    portfolio_text: Optional[str] = None
+    max_questions: Optional[int] = 2
     context: Optional[str] = None
+
+
+class FollowingQuestion(BaseModel):
+    id: str
+    text: str
+    type: str
+    interviewer_persona: Optional[str] = None
 
 
 class FollowingQuestionResponse(BaseModel):
     success: bool
-    following_question: Optional[str] = None
+    questions: Optional[List[FollowingQuestion]] = None
     error: Optional[str] = None
 
 
 class EvaluateAnswerRequest(BaseModel):
+    html_content: Optional[str] = None
     question: str
     answer: str
-    context: Optional[str] = None
+    user_level: Optional[str] = "intermediate"
+
+
+class DetailedFeedback(BaseModel):
+    content: str
+    structure: str
+    recommendations: str
 
 
 class AnswerFeedback(BaseModel):
-    score: int
-    strengths: List[str]
-    weaknesses: List[str]
-    suggestions: List[str]
-    overall_comment: str
+    overall_score: int
+    content_score: int
+    structure_score: int
+    technical_accuracy: int
+    improvement_suggestions: List[str]
+    positive_points: List[str]
+    detailed_feedback: DetailedFeedback
 
 
 class EvaluateAnswerResponse(BaseModel):
@@ -76,14 +105,16 @@ class EvaluateAnswerResponse(BaseModel):
     error: Optional[str] = None
 
 
-class QAPair(BaseModel):
-    question: str
-    answer: str
+class SessionData(BaseModel):
+    questions: List[str]
+    answers: List[str]
+    question_types: List[str]
 
 
 class EvaluateAllRequest(BaseModel):
-    qa_pairs: List[QAPair]
-    portfolio_context: Optional[str] = None
+    html_content: Optional[str] = None
+    session_data: SessionData
+    user_level: Optional[str] = "intermediate"
 
 
 class OverallEvaluation(BaseModel):
@@ -105,6 +136,8 @@ class EvaluateAllResponse(BaseModel):
 
 class EvaluatePortfolioRequest(BaseModel):
     html_content: str
+    portfolio_text: Optional[str] = None
+    evaluation_criteria: Optional[List[str]] = None
 
 
 class PortfolioEvaluation(BaseModel):
