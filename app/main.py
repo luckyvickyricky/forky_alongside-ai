@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from app.core.config import settings
+from app.core.logging import langfuse_logger
 from app.api.v1 import documents, keywords, questions, evaluate
 
 app = FastAPI(
@@ -12,6 +13,20 @@ app.include_router(documents.router, prefix="/api/v1")
 app.include_router(keywords.router, prefix="/api/v1")
 app.include_router(questions.router, prefix="/api/v1")
 app.include_router(evaluate.router, prefix="/api/v1")
+
+
+@app.on_event("startup")
+async def startup_event():
+    if langfuse_logger.enabled:
+        print("Langfuse logging is enabled")
+    else:
+        print("Langfuse logging is disabled")
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    if langfuse_logger.enabled:
+        langfuse_logger.flush()
 
 
 @app.get("/")
@@ -28,6 +43,7 @@ async def health_check():
     return {
         "status": "healthy",
         "service": settings.app_name,
-        "version": settings.app_version
+        "version": settings.app_version,
+        "langfuse_enabled": settings.enable_langfuse
     }
 

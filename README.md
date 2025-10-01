@@ -81,12 +81,17 @@ uv sync
 ### 환경 변수 설정
 `.env` 파일을 생성하고 다음 내용을 입력합니다:
 ```
-UPSTAGE_API_KEY=your_api_key_here
+UPSTAGE_API_KEY=your_upstage_api_key
 UPSTAGE_BASE_URL=https://api.upstage.ai/v1
-LANGFUSE_SECRET_KEY=your_langfuse_key
+UPSTAGE_DOCUMENT_API_KEY=your_document_api_key
+
+ENABLE_LANGFUSE=false
+LANGFUSE_SECRET_KEY=your_langfuse_secret_key
 LANGFUSE_PUBLIC_KEY=your_langfuse_public_key
-LANGFUSE_HOST=your_langfuse_host
+LANGFUSE_HOST=https://cloud.langfuse.com
 ```
+
+참고: `env.example` 파일을 복사하여 사용할 수 있습니다.
 
 ### 개발 서버 실행
 ```bash
@@ -114,7 +119,15 @@ uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
 ## 개발 가이드
 
 ### 로깅
-모든 LLM 호출은 Langfuse를 통해 자동으로 로깅됩니다.
+모든 LLM 호출은 Langfuse를 통해 자동으로 로깅됩니다. Langfuse를 활성화하려면 환경 변수에서 `ENABLE_LANGFUSE=true`로 설정하고 관련 API 키를 입력하세요.
+
+각 API 호출은 고유한 trace name으로 추적됩니다:
+- `keyword_extraction`: 키워드 추출
+- `question_generation`: 메인 질문 생성
+- `following_question_generation`: 꼬리질문 생성
+- `answer_evaluation`: 답변 평가
+- `overall_evaluation`: 전체 면접 평가
+- `portfolio_evaluation`: 포트폴리오 평가
 
 ### 테스트
 ```bash

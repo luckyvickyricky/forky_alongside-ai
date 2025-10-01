@@ -41,7 +41,7 @@ class EvaluationService:
             {"role": "user", "content": prompt}
         ]
         
-        response = llm_service.generate_completion(messages)
+        response = llm_service.generate_completion(messages, trace_name="answer_evaluation")
         
         feedback = self._parse_feedback(response)
         return feedback
@@ -110,7 +110,7 @@ class EvaluationService:
             {"role": "user", "content": prompt}
         ]
         
-        response = llm_service.generate_completion(messages)
+        response = llm_service.generate_completion(messages, trace_name="following_question_generation")
         
         return response.strip()
 

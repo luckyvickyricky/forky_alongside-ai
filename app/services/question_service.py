@@ -37,7 +37,7 @@ class QuestionService:
             {"role": "user", "content": prompt}
         ]
         
-        response = llm_service.generate_completion(messages)
+        response = llm_service.generate_completion(messages, trace_name="question_generation")
         
         questions = []
         lines = response.strip().split('\n')

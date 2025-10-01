@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings
+from typing import Optional
 
 
 class Settings(BaseSettings):
@@ -11,6 +12,11 @@ class Settings(BaseSettings):
     
     llm_model: str = "solar-pro2"
     reasoning_effort: str = "high"
+    
+    langfuse_secret_key: Optional[str] = None
+    langfuse_public_key: Optional[str] = None
+    langfuse_host: Optional[str] = None
+    enable_langfuse: bool = False
     
     class Config:
         env_file = ".env"

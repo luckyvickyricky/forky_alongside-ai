@@ -23,7 +23,7 @@ HTML 내용:
             {"role": "user", "content": prompt}
         ]
         
-        response = llm_service.generate_completion(messages)
+        response = llm_service.generate_completion(messages, trace_name="keyword_extraction")
         
         keywords = [k.strip() for k in response.split(',')]
         return keywords[:max_keywords]

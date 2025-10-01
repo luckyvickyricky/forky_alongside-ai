@@ -46,7 +46,7 @@ class OverallEvaluationService:
             {"role": "user", "content": prompt}
         ]
         
-        response = llm_service.generate_completion(messages)
+        response = llm_service.generate_completion(messages, trace_name="overall_evaluation")
         
         evaluation = self._parse_overall_evaluation(response)
         return evaluation
@@ -138,7 +138,7 @@ class OverallEvaluationService:
             {"role": "user", "content": prompt}
         ]
         
-        response = llm_service.generate_completion(messages)
+        response = llm_service.generate_completion(messages, trace_name="portfolio_evaluation")
         
         evaluation = self._parse_portfolio_evaluation(response)
         return evaluation
