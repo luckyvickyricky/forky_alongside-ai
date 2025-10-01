@@ -24,12 +24,21 @@ class DocumentService:
         files = {"document": (filename, file_bytes, "application/pdf")}
         data = {
             "ocr": "force",
-            "base64_encoding": "['table']",
+            "base64_encoding": "[]",  # 빈 배열로 설정하여 base64 인코딩 비활성화
             "model": "document-parse"
         }
         
         response = requests.post(self.url, headers=headers, files=files, data=data)
-        return response.json()
+        result = response.json()
+        
+        # 응답 데이터 정리: 불필요한 필드 제거
+        if "metadata" in result and "elements" in result["metadata"]:
+            for element in result["metadata"]["elements"]:
+                # base64_encoding 필드가 있으면 제거
+                if "base64_encoding" in element:
+                    del element["base64_encoding"]
+        
+        return result
 
 
 document_service = DocumentService()

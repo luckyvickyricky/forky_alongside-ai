@@ -8,5 +8,5 @@ if [ ! -f .env ]; then
 fi
 
 echo "Starting development server with hot reload..."
-uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8003
 
