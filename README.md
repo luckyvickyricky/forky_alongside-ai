@@ -2,6 +2,8 @@
 
 포트폴리오 기반 AI 면접 연습 시스템의 백엔드 API 서버입니다.
 
+빠른 시작은 [QUICKSTART.md](QUICKSTART.md)를 참조하세요.
+
 ## 주요 기능
 
 - PDF 포트폴리오 문서를 HTML로 변환

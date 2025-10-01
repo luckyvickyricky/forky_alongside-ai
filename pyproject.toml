@@ -15,3 +15,9 @@ dependencies = [
     "langfuse>=2.54.0",
     "python-dotenv>=1.0.1",
 ]
+
+[project.urls]
+Homepage = "https://github.com/your-repo/forky_alongside-ai"
+Documentation = "https://github.com/your-repo/forky_alongside-ai#readme"
+Repository = "https://github.com/your-repo/forky_alongside-ai"
+Issues = "https://github.com/your-repo/forky_alongside-ai/issues"

@@ -3,13 +3,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.logging import langfuse_logger
 from app.core.exceptions import ServiceException, service_exception_handler
+from app.core.middleware import LoggingMiddleware
 from app.api.v1 import documents, keywords, questions, evaluate
 
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
-    description="AI-powered interview practice system based on portfolio documents"
+    description="AI-powered interview practice system based on portfolio documents",
+    docs_url="/api/docs",
+    redoc_url="/api/redoc",
+    openapi_url="/api/openapi.json"
 )
+
+app.add_middleware(LoggingMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
