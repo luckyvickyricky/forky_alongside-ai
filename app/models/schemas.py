@@ -42,3 +42,81 @@ class QuestionGenerateResponse(BaseModel):
     success: bool
     questions: Optional[List[Question]] = None
     error: Optional[str] = None
+
+
+class FollowingQuestionRequest(BaseModel):
+    question: str
+    answer: str
+    context: Optional[str] = None
+
+
+class FollowingQuestionResponse(BaseModel):
+    success: bool
+    following_question: Optional[str] = None
+    error: Optional[str] = None
+
+
+class EvaluateAnswerRequest(BaseModel):
+    question: str
+    answer: str
+    context: Optional[str] = None
+
+
+class AnswerFeedback(BaseModel):
+    score: int
+    strengths: List[str]
+    weaknesses: List[str]
+    suggestions: List[str]
+    overall_comment: str
+
+
+class EvaluateAnswerResponse(BaseModel):
+    success: bool
+    feedback: Optional[AnswerFeedback] = None
+    error: Optional[str] = None
+
+
+class QAPair(BaseModel):
+    question: str
+    answer: str
+
+
+class EvaluateAllRequest(BaseModel):
+    qa_pairs: List[QAPair]
+    portfolio_context: Optional[str] = None
+
+
+class OverallEvaluation(BaseModel):
+    total_score: int
+    average_score: float
+    technical_competence: str
+    communication_skills: str
+    problem_solving: str
+    areas_of_strength: List[str]
+    areas_for_improvement: List[str]
+    final_recommendation: str
+
+
+class EvaluateAllResponse(BaseModel):
+    success: bool
+    evaluation: Optional[OverallEvaluation] = None
+    error: Optional[str] = None
+
+
+class EvaluatePortfolioRequest(BaseModel):
+    html_content: str
+
+
+class PortfolioEvaluation(BaseModel):
+    completeness_score: int
+    technical_depth_score: int
+    presentation_score: int
+    strengths: List[str]
+    improvements: List[str]
+    overall_assessment: str
+
+
+class EvaluatePortfolioResponse(BaseModel):
+    success: bool
+    evaluation: Optional[PortfolioEvaluation] = None
+    error: Optional[str] = None
