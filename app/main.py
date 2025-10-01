@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.core.config import settings
-from app.api.v1 import documents
+from app.api.v1 import documents, keywords, questions
 
 app = FastAPI(
     title=settings.app_name,
@@ -9,6 +9,8 @@ app = FastAPI(
 )
 
 app.include_router(documents.router, prefix="/api/v1")
+app.include_router(keywords.router, prefix="/api/v1")
+app.include_router(questions.router, prefix="/api/v1")
 
 
 @app.get("/")
